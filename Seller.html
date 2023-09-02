@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Admin page</title>
+</head>
+
+<body>
+
+    <form id="form">
+        <label for="price">Selling Price :</label>
+        <input type="number" name="SellingPrice" id="price">
+        <label for="product">Product Name :</label>
+        <input type="text" name="ProductName" id="product">
+        <label for="Category">Choose a Category :</label>
+        <select name="Category" id="Category">
+            <option value="Electronics">Electronics</option>
+            <option value="Food">Food</option>
+            <option value="Skincare">Skincare</option>
+        </select>
+        <button>Add Product</button>
+        <!-- <label for="count">Total of all product</label>
+        <input type="number" name="count" id="count" style="color:black;"> -->
+    </form>
+
+    <div id="list">
+
+        <h1>Products</h1>
+        <hr>
+        <ul id="Eitem">
+
+            <h2>Electronic items</h2>
+
+        </ul>
+
+        <ul id="Fitem">
+            <h2>Food items</h2>
+        </ul>
+
+        <ul id="Sitem">
+            <h2>Skincare items</h2>
+        </ul>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        const Form = document.getElementById("form")
+        const Price = document.getElementById("price");
+        const Product = document.getElementById("product");
+        const Category = document.getElementById("Category");
+        const Eitem = document.getElementById("Eitem");
+        const Fitem = document.getElementById("Fitem");
+        const Sitem = document.getElementById("Sitem");
+        const List = document.getElementById("list")
+        const dltbtn = document.createElement("button")
+        dltbtn.value = delete
+            dltbtn.appendChild(document.createTextNode('Delete Product'))
+        var edit = "";
+
+        Form.addEventListener('submit', AddProduct)
+        async function AddProduct(e) {
+            e.preventDefault();
+
+
+            let obj = {
+                Price: Price.value,
+                Product: Product.value,
+                Category: Category.value
+            }
+            // obj=JSON.stringify(obj) 
+            // localStorage.setItem(Product.value,obj)
+
+            const post = axios.post("https://crudcrud.com/api/9c253277f39649eeb1151124d9981236/sellerproduct", obj)
+                .then(res => {
+                    showonscreen(res.data)
+                }).catch(err => {
+                    console.error(err.msg)
+                })
+            console.log(post)
+        } async function showonscreen(data) {
+
+            let dlt = document.createElement('button')
+            dlt.type = delete
+                dlt.appendChild(document.createTextNode('Delete Product'))
+            dlt.onclick = () => {
+                dltFromServer(data.Category,data._id);
+            }
+            let li = document.createElement('li')
+            li.textContent = `$${data.Price} => ${data.Product} => ${data.Category} => `
+            li.id = data._id;
+            li.appendChild(dlt)
+
+            if (data.Category == "Electronics") {
+
+
+                Eitem.appendChild(li)
+            }
+            else if (data.Category == "Food") {
+
+
+                Fitem.appendChild(li)
+
+            }
+            else if (data.Category == "Skincare") {
+
+
+                Sitem.appendChild(li)
+                console.log(data.Category)
+
+            }
+        }
+        async function dltFromServer(Category,id) {
+            const Delete = axios.delete(`https://crudcrud.com/api/9c253277f39649eeb1151124d9981236/sellerproduct/${id}`)
+                .then(res => {
+                    dltFromScreen(Category,id)
+                }).catch(err => console.error(err.message))
+            console.log(Delete);
+        }
+        async function dltFromScreen(Category,id) {
+
+            let li = document.getElementById(`${id}`);
+            if (Category == "Electronics") {
+                Eitem.removeChild(li)
+            }
+            else if (Category == "Food") {
+                Fitem.removeChild(li)
+            }
+            else if (Category == "Skincare") {
+                Sitem.removeChild(li)
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>
