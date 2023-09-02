@@ -46,6 +46,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+        
 
         const Form = document.getElementById("form")
         const Price = document.getElementById("price");
@@ -73,7 +74,7 @@
             // obj=JSON.stringify(obj) 
             // localStorage.setItem(Product.value,obj)
 
-            const post = axios.post("https://crudcrud.com/api/9c253277f39649eeb1151124d9981236/sellerproduct", obj)
+            const post = axios.post("https://crudcrud.com/api/c5f4a436a82847a3bc99ff383ac32a36/products", obj)
                 .then(res => {
                     showonscreen(res.data)
                 }).catch(err => {
@@ -113,7 +114,7 @@
             }
         }
         async function dltFromServer(Category,id) {
-            const Delete = axios.delete(`https://crudcrud.com/api/9c253277f39649eeb1151124d9981236/sellerproduct/${id}`)
+            const Delete = axios.delete(`https://crudcrud.com/api/c5f4a436a82847a3bc99ff383ac32a36/products/${id}`)
                 .then(res => {
                     dltFromScreen(Category,id)
                 }).catch(err => console.error(err.message))
@@ -133,6 +134,16 @@
             }
 
         }
+        window.addEventListener('DOMContentLoaded', () => {
+          const reload=  axios.get("https://crudcrud.com/api/c5f4a436a82847a3bc99ff383ac32a36/products")
+          .then(res => {
+            for (let i=0 ;i<res.data.length;i++) {
+                showonscreen(res.data[i])
+            }
+          }).catch(err => {
+            console.log (err.message)
+          })
+        })
     </script>
 
 </body>
